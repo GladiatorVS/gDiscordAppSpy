@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -40,16 +42,25 @@ namespace gDiscordAppSpy.ViewModel
 
         private void GetAssetsClick(object sender)
         {
+            string id = dataText;
             //MessageBox.Show(DataText);
             //detect type -> id_app,id_user,asset_url
 
             //Assets.Clear();
 
+            string pattern = @"^(https://)?cdn\.discordapp\.com/app-assets/(\d+)/\d+\.png$";
+
+            if (Regex.IsMatch(dataText, pattern))
+            {
+                Match match = Regex.Match(dataText, pattern);
+                string text = match.Groups[2].Value;
+                id = text;
+            }
             //if the data is id_user -> (...)
+            //....
 
-            //if the data is asset_url -> convent to id_app
 
-            _processDataCommand.Execute(dataText);
+            _processDataCommand.Execute(id);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
