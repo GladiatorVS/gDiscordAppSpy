@@ -26,11 +26,12 @@ namespace gDiscordAppSpy.ViewModel
         }
 
         public ICommand UpdateDisocrdAppCommand;
-
+        public ICommand BackButtonCommand { get; set; }
         public AssetsViewModel(object AppVM)
         {
             discordApp = new DiscordAppModel();
             UpdateDisocrdAppCommand = new RelayCommand(o => UpdateDiscordApp(o));
+            BackButtonCommand = new RelayCommand(o => (AppVM as ApplicationViewModel).ChangePageCommand.Execute("main"));
         }
 
         private void UpdateDiscordApp(object o)
