@@ -22,8 +22,36 @@ namespace gDiscordAppSpy.ViewModel
 {
     public class ApplicationViewModel : INotifyPropertyChanged
     {
-        private Control selectedPage;
+        private bool showLoading = false;
+
+        public bool ShowLoading
+        {
+            get { return showLoading; }
+            set
+            {
+                if (showLoading != value)
+                {
+                    showLoading = value;
+                    OnPropertyChanged(nameof(ShowLoading));
+                }
+            }
+        }
+       
         
+
+        private Control selectedPage;
+        private string loadingStatus;
+
+        public string LoadingStatus
+        {
+            get { return loadingStatus; }
+            set
+            {
+                loadingStatus = value;
+                OnPropertyChanged(nameof(LoadingStatus));
+            }
+        }
+
         public Dictionary<string,Control> Pages { get; set; }
         public Control SelectedPage
         {
@@ -31,17 +59,20 @@ namespace gDiscordAppSpy.ViewModel
             set
             {
                 selectedPage = value;
-                OnPropertyChanged("SelectedPage");
+                OnPropertyChanged(nameof(SelectedPage));
             }
         }
 
         public DiscordAppModel discordApp;
 
-        public ICommand ChangePageCommand { get; set; }
-        public ICommand _setErrorTextCommand { get; set; }
-        public ICommand _updateDisocrdAppCommand { get; set; }
+        public ICommand ChangePageCommand       { get; }
+        public ICommand _setErrorTextCommand    { get; }
+        public ICommand _updateDisocrdAppCommand{ get; }
 
-        public ICommand ProcessDataCommand{ get; set; }
+        public ICommand ProcessDataCommand      { get; }
+
+        public ICommand IsLoadingCommand        { get; }
+        public ICommand SetLoadingStatus        { get; }
 
         public ApplicationViewModel()
         {
@@ -50,8 +81,9 @@ namespace gDiscordAppSpy.ViewModel
             discordApp = new DiscordAppModel();
 
             ChangePageCommand = new RelayCommand(o => ChangePageClick(o));
-
+            IsLoadingCommand = new RelayCommand(o => ShowLoading = (bool)o);
             ProcessDataCommand = new RelayCommand(o => ProcessData(o));
+            SetLoadingStatus = new RelayCommand(o => LoadingStatus = o.ToString());
 
             InfoViewModel info_vm = new InfoViewModel(this);
             _setErrorTextCommand = info_vm.SetErrorTextCommand;
@@ -65,27 +97,37 @@ namespace gDiscordAppSpy.ViewModel
 
             selectedPage = Pages["main"];
 
+            loadingStatus = "";
         }
 
-        private void ProcessData(object o)
+        private async void ProcessData(object o)
         {
             discordApp.Assets.Clear();
+            
+            LoadingStatus = "getin from server";
+            IsLoadingCommand.Execute(true);
 
             string id = o.ToString();
 
             string url = "https://discord.com/api/v9/oauth2/applications/{APP_ID}/assets";
             url = url.Replace("{APP_ID}", id);
 
-            WebRequest reqGET = WebRequest.Create(url);
-            string ret;
-            try
-            {
-                ret = new StreamReader(reqGET.GetResponse().GetResponseStream()).ReadToEnd();
-            }
-            catch (Exception)
-            {
-                ret = "";
-            }
+            string ret = "";
+            Task task = Task.Run(() => {
+                WebRequest reqGET = WebRequest.Create(url);
+                try
+                {
+                    ret = new StreamReader(reqGET.GetResponse().GetResponseStream()).ReadToEnd();
+                }
+                catch (Exception)
+                {
+                    ret = "";
+                }
+            });
+
+            await task;
+
+            IsLoadingCommand.Execute(false);
 
             if (ret == "")
             {

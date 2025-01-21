@@ -7,8 +7,19 @@
         mc:Ignorable="d"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
-        Title="[Ty Ved Znaesh, chto v subboty vor nie hodit na raboty]" Height="324" Width="524" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        Title="[Ty Ved Znaesh, chto v subboty vor nie hodit na raboty]" Height="324" Width="524" WindowStartupLocation="CenterScreen" Background="Black" MinWidth="524" MinHeight="324">
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </Window.Resources>
     <Grid>
-        <ContentControl Content="{Binding SelectedPage}"/>
+        <ContentControl Opacity="{Binding LoadingOpacityInv}" Content="{Binding SelectedPage}"/>
+        <Grid Visibility="{Binding ShowLoading, Converter={StaticResource BoolToVisibilityConverter}}" >
+            <Rectangle Fill="Black"/>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image RenderOptions.BitmapScalingMode="Fant" gif:ImageBehavior.AnimatedSource="/Resources/loading.gif" Width="86" Height="86" />
+                <TextBlock IsHitTestVisible="True" Text="{Binding LoadingStatus}"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
