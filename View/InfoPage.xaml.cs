@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace gDiscordAppSpy.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainPage.xaml
+    /// Логика взаимодействия для InfoPage.xaml
     /// </summary>
-    public partial class MainPage : UserControl
+    public partial class InfoPage : UserControl
     {
-        public MainPage(object mdl)
+        public InfoPage(object mdl)
         {
             InitializeComponent();
             DataContext = mdl;

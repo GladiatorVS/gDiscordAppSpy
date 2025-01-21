@@ -58,6 +58,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="View\AssetsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\InfoPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -70,11 +78,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IdToImageConverter.cs" />
     <Compile Include="Model\Asset.cs" />
     <Compile Include="Model\DiscordAppModel.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModel\ApplicationViewModel.cs" />
+    <Compile Include="ViewModel\AssetsViewModel.cs" />
+    <Compile Include="ViewModel\InfoViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="View\AssetsPage.xaml.cs">
+      <DependentUpon>AssetsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\InfoPage.xaml.cs">
+      <DependentUpon>InfoPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

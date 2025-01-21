@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
-        Title="MainWindow" Height="324" Width="524">
+        Title="[Ty Ved Znaesh, chto v subboty vor nie hodit na raboty]" Height="324" Width="524" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <ContentControl Content="{Binding SelectedPage}"/>
     </Grid>

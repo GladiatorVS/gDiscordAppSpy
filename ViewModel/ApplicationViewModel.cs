@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,15 +16,15 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using gDiscordAppSpy.Model;
 using Newtonsoft.Json;
+using Windows.UI.WebUI;
 
 namespace gDiscordAppSpy.ViewModel
 {
     public class ApplicationViewModel : INotifyPropertyChanged
     {
         private Control selectedPage;
-        private string dataText;
-        public ObservableCollection<Asset> Assets { get; set; }
-        public ObservableCollection<Control> Pages { get; set; }
+        
+        public Dictionary<string,Control> Pages { get; set; }
         public Control SelectedPage
         {
             get { return selectedPage; }
@@ -34,38 +35,46 @@ namespace gDiscordAppSpy.ViewModel
             }
         }
 
-        public string DataText
-        {
-            get { return dataText; }
-            set
-            {
-                dataText = value;
-                OnPropertyChanged("DataText");
-            }
-        }
+        public DiscordAppModel discordApp;
 
-        public ICommand GetAssetsCommand { get; set; }
+        public ICommand ChangePageCommand { get; set; }
+        public ICommand _setErrorTextCommand { get; set; }
+        public ICommand _updateDisocrdAppCommand { get; set; }
+
+        public ICommand ProcessDataCommand{ get; set; }
 
         public ApplicationViewModel()
         {
-            Assets = new ObservableCollection<Asset>();
-            GetAssetsCommand = new RelayCommand(o => GetAssetsClick(""));
+            Pages = new Dictionary<string, Control>();
 
-            selectedPage = new View.MainPage(this);
+            discordApp = new DiscordAppModel();
+
+            ChangePageCommand = new RelayCommand(o => ChangePageClick(o));
+
+            ProcessDataCommand = new RelayCommand(o => ProcessData(o));
+
+            InfoViewModel info_vm = new InfoViewModel(this);
+            _setErrorTextCommand = info_vm.SetErrorTextCommand;
+
+            AssetsViewModel asset_vm = new AssetsViewModel(this);
+            _updateDisocrdAppCommand = asset_vm.UpdateDisocrdAppCommand;
+
+            Pages.Add("assets", new View.AssetsPage(asset_vm));
+            Pages.Add("info", new View.InfoPage(info_vm));
+            Pages.Add("main", new View.MainPage(new MainPageViewModel(this)));
+
+            selectedPage = Pages["main"];
+
         }
-        private void GetAssetsClick(object sender)
+
+        private void ProcessData(object o)
         {
-            //MessageBox.Show(DataText);
-            //detect type -> id_app,id_user,asset_url
+            discordApp.Assets.Clear();
 
-            //Assets.Clear();
-
-            //if the data is id_user -> (...)
-
-            //if the data is asset_url -> convent to id_app
+            string id = o.ToString();
 
             string url = "https://discord.com/api/v9/oauth2/applications/{APP_ID}/assets";
-            url = url.Replace("{APP_ID}", dataText);
+            url = url.Replace("{APP_ID}", id);
 
             WebRequest reqGET = WebRequest.Create(url);
             string ret;
@@ -80,11 +89,39 @@ namespace gDiscordAppSpy.ViewModel
 
             if (ret == "")
             {
-                MessageBox.Show("Ops!");
+                _setErrorTextCommand.Execute("Ne udalos found application");
+                ChangePageCommand.Execute("info");
                 return;
             }
 
-            Assets = JsonConvert.DeserializeObject<ObservableCollection<Asset>>(ret);
+            discordApp.Assets = JsonConvert.DeserializeObject<ObservableCollection<Asset>>(ret);
+
+            if (discordApp.Assets.Count == 0)
+            {
+                _setErrorTextCommand.Execute("Ne udalos found assets");
+                ChangePageCommand.Execute("info");
+                return;
+            }
+
+            discordApp.AppID = id;
+
+            discordApp.LoadImages();
+
+            _updateDisocrdAppCommand.Execute(discordApp);
+
+            //to asset page
+            ChangePageCommand.Execute("assets");
+        }
+
+        private void ChangePageClick(object sender)
+        {
+            Control control;
+            Pages.TryGetValue(sender.ToString(), out control);
+
+            if (control != null)
+                SelectedPage = control;
+            else
+                MessageBox.Show($"[{sender.ToString()}] - this page is not exist.", "ops!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         /*

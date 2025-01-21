@@ -1,22 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using gDiscordAppSpy.Model;
+using Newtonsoft.Json;
 
 namespace gDiscordAppSpy.ViewModel
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
-        //
-        
-        public MainPageViewModel()
+        private string dataText;
+        public string DataText
         {
+            get { return dataText; }
+            set
+            {
+                dataText = value;
+                OnPropertyChanged("DataText");
+            }
+        }
+        public ICommand GetAssetsCommand { get; set; }
 
+        private ICommand _processDataCommand;
+        public MainPageViewModel(ApplicationViewModel appVM)
+        {
+            _processDataCommand = appVM.ProcessDataCommand;
+            //Assets = new ObservableCollection<Asset>();
+            GetAssetsCommand = new RelayCommand(o => GetAssetsClick(""));
         }
 
+        private void GetAssetsClick(object sender)
+        {
+            //MessageBox.Show(DataText);
+            //detect type -> id_app,id_user,asset_url
+
+            //Assets.Clear();
+
+            //if the data is id_user -> (...)
+
+            //if the data is asset_url -> convent to id_app
+
+            _processDataCommand.Execute(dataText);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
