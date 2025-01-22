@@ -13,7 +13,7 @@
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Window.Resources>
     <Grid>
-        <ContentControl Opacity="{Binding LoadingOpacityInv}" Content="{Binding SelectedPage}"/>
+        <ContentControl Content="{Binding SelectedPage}"/>
         <Grid Visibility="{Binding ShowLoading, Converter={StaticResource BoolToVisibilityConverter}}" >
             <Rectangle Fill="Black"/>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">

@@ -54,16 +54,12 @@ namespace gDiscordAppSpy.ViewModel
             dialog.IsFolderPicker = true;
 
             if (dialog.ShowDialog() != CommonFileDialogResult.Ok || Assets.Count == 0)
-            {
                 return;
-            }
 
             _IsLoading.Execute(true);
             
             Task task = Task.Run(() =>
             {
-                //discordApp.SaveAllAssets();
-               
                 for (int i = 0; i < Assets.Count(); i++)
                 {
                     _LoadingStatus.Execute($"[{i+1}/{Assets.Count()}] Downloading {Assets[i].Name}");
@@ -72,14 +68,14 @@ namespace gDiscordAppSpy.ViewModel
             });
 
             await task;
-            //System.Windows.MessageBox.Show($"Saved {Assets.Count()} files");
+
             _IsLoading.Execute(false);
         }
 
         private void UpdateDiscordApp(object o)
         {
             discordApp = o as DiscordAppModel;
-            OnPropertyChanged("Assets");
+            OnPropertyChanged(nameof(Assets));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

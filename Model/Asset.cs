@@ -15,7 +15,6 @@ namespace gDiscordAppSpy.Model
         private string id;
         private int type;
         private string name;
-        //private Image image;
         private string imageUrl;
         public string Id
         {
@@ -44,15 +43,7 @@ namespace gDiscordAppSpy.Model
                 OnPropertyChanged("Name");
             }
         }
-        //public Image Image
-        //{
-        //    get { return image; }
-        //    set
-        //    {
-        //        image = value;
-        //        OnPropertyChanged("Image");
-        //    }
-        //}
+
         public string ImageUrl
         {
             get { return imageUrl; }

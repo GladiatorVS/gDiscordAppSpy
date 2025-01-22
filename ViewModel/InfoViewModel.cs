@@ -18,21 +18,17 @@ namespace gDiscordAppSpy.ViewModel
             set
             {
                 lastError = value;
-                OnPropertyChanged("LastError");
+                OnPropertyChanged(nameof(LastError));
             }
         }
         public ICommand SetErrorTextCommand { get; set; }
         public ICommand BackButtonCommand { get; set; }
-        //private ICommand _changePageCommand;
         public InfoViewModel(object appViewModel)
         {
             lastError = "";
             SetErrorTextCommand = new RelayCommand(o => SetErrorClick(o));
-            //_changePageCommand = (appViewModel as ApplicationViewModel).ChangePageCommand;
             BackButtonCommand = new RelayCommand(o => (appViewModel as ApplicationViewModel).ChangePageCommand.Execute("main"));
         }
-
-        
 
         private void SetErrorClick(object sender) => LastError = sender.ToString();
 

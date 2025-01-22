@@ -104,7 +104,7 @@ namespace gDiscordAppSpy.ViewModel
         {
             discordApp.Assets.Clear();
             
-            LoadingStatus = "getin from server";
+            LoadingStatus = "Fetching information from Discord servers.";
             IsLoadingCommand.Execute(true);
 
             string id = o.ToString();
@@ -131,7 +131,7 @@ namespace gDiscordAppSpy.ViewModel
 
             if (ret == "")
             {
-                _setErrorTextCommand.Execute("Ne udalos found application");
+                _setErrorTextCommand.Execute("Unable to find the application. Please check the ID or asset link.");
                 ChangePageCommand.Execute("info");
                 return;
             }
@@ -140,7 +140,7 @@ namespace gDiscordAppSpy.ViewModel
 
             if (discordApp.Assets.Count == 0)
             {
-                _setErrorTextCommand.Execute("Ne udalos found assets");
+                _setErrorTextCommand.Execute("No assets were found for this application.");
                 ChangePageCommand.Execute("info");
                 return;
             }
@@ -163,25 +163,8 @@ namespace gDiscordAppSpy.ViewModel
             if (control != null)
                 SelectedPage = control;
             else
-                MessageBox.Show($"[{sender.ToString()}] - this page is not exist.", "ops!", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Page [{sender.ToString()}] not found.", "ops!", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        /*
-                 //private bool LoadByID(string id)
-                //{
-                //    string url = "https://discord.com/api/v9/oauth2/applications/{APP_ID}/assets";
-                //    url = url.Replace("{APP_ID}", id);
-
-                //    string data = GET(id);
-
-                //    if (data == "")
-                //        return false;
-
-                //    Assets = JsonConvert.DeserializeObject<ObservableCollection<Asset>>(data);
-
-                //    return true;
-                //}
-         */
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")

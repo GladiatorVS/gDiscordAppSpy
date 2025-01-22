@@ -6,20 +6,23 @@
              xmlns:local="clr-namespace:gDiscordAppSpy.View"
              mc:Ignorable="d" 
              xmlns:ui="http://schemas.modernwpf.com/2019"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+             d:DesignHeight="324" d:DesignWidth="524">
+    <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBox Text="{Binding DataText}" Width="378"/>
-        <Button Content="Next" Grid.Column="1" Command="{Binding GetAssetsCommand}"/>
-        
-        <TextBlock Grid.Row="1" Text="0" />
+        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding DataText}" Width="378" VerticalAlignment="Bottom"/>
+        <Button Content="Next" Grid.Row="1" Grid.Column="2" Command="{Binding GetAssetsCommand}" VerticalAlignment="Bottom"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="Enter the application ID or a link to any asset of the application." Margin="0,6,0,0" />
     </Grid>
 </UserControl>

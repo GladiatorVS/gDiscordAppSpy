@@ -27,7 +27,7 @@ namespace gDiscordAppSpy.ViewModel
             set
             {
                 dataText = value;
-                OnPropertyChanged("DataText");
+                OnPropertyChanged(nameof(DataText));
             }
         }
         public ICommand GetAssetsCommand { get; set; }
@@ -36,19 +36,13 @@ namespace gDiscordAppSpy.ViewModel
         public MainPageViewModel(ApplicationViewModel appVM)
         {
             _processDataCommand = appVM.ProcessDataCommand;
-            //Assets = new ObservableCollection<Asset>();
             GetAssetsCommand = new RelayCommand(o => GetAssetsClick(""));
         }
 
         private void GetAssetsClick(object sender)
         {
             string id = dataText;
-            //MessageBox.Show(DataText);
-            //detect type -> id_app,id_user,asset_url
-
-            //Assets.Clear();
-
-            string pattern = @"^(https://)?cdn\.discordapp\.com/app-assets/(\d+)/\d+\.png$";
+            string pattern = @"^(https://)?cdn\.discordapp\.com/app-assets/(\d+)/\d+\.png$"; //asset url pattern
 
             if (Regex.IsMatch(dataText, pattern))
             {
@@ -56,9 +50,6 @@ namespace gDiscordAppSpy.ViewModel
                 string text = match.Groups[2].Value;
                 id = text;
             }
-            //if the data is id_user -> (...)
-            //....
-
 
             _processDataCommand.Execute(id);
         }
